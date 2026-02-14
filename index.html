@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <title>7757.html</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+<!-- THE FORMULA -->
+<div>
+  \(
+  \displaystyle
+  \begin{aligned}
+    d(t) &= \begin{cases}
+      0 & \text{if } t < 10^9 \\
+      \lfloor \log_{10} t \rfloor & \text{otherwise}
+    \end{cases} \\[1em]
+    \chi(t) &= \max\left( 0, 1 - \frac{d(t)}{7757} \right) \\[1em]
+    \alpha(t) &= \sum_{n=1}^{512} \frac{t \bmod p_n}{p_n} \\[1em]
+    \beta(t) &= \sum_{n=513}^{1024} \frac{t \bmod p_n}{p_n} \\[1em]
+    f_c(t) &= \max\left( 20, 100 + \chi(t) \cdot ( 500 + 300 \sin(\alpha(t)) ) \right) \\[1em]
+    f_m(t) &= f_c(t) \cdot ( 2 + 0.71828 \cdot \chi(t) ) \\[1em]
+    I(t) &= 1 + \chi(t) \cdot ( 19 + 10 \sin(\beta(t)) ) \\[1em]
+    \phi_c[n] &= \phi_c[n-1] + 2\pi \frac{f_c(t_k)}{R_s} \\[1em]
+    \phi_m[n] &= \phi_m[n-1] + 2\pi \frac{f_m(t_k)}{R_s} \\[1em]
+    S_{\text{FM}}[n] &= \sin( \phi_c[n] + I(t_k) \cdot \sin(\phi_m[n]) ) \\[1em]
+    N[n] &\in [-1, 1] \\[1em]
+    y[n] &= \tanh\Bigl( \bigl( S_{\text{FM}}[n] (1 - 0.5\chi(t_k)) + N[n] 0.5\chi(t_k) + y[n-1] 0.9\chi(t_k) \bigr) \cdot (1 + 99\chi(t_k)) \Bigr)
+  \end{aligned}
+  \)
+</div>
+</body>
+
+<br>
+<input type="text" id="inp" size="42" placeholder="select a unit, enter numbers (e.g. 34, 1e2800), and jump.">
+<button id="goBtn">jump</button>
+<button id="stopBtn">stop</button>
+<span id="err" style="color:red"></span>
+<br>
+
+<label><input type="radio" name="u" value="ms"> 1 ms</label>
+<label><input type="radio" name="u" value="s"> 1 second</label>
+<label><input type="radio" name="u" value="min"> 1 minute</label>
+<label><input type="radio" name="u" value="hr"> 1 hour</label>
+<label><input type="radio" name="u" value="day"> 1 day</label>
+<label><input type="radio" name="u" value="yr" checked> 1 year</label>
+<label><input type="radio" name="u" value="uhd"> 1 Universe Heat Death Age</label>
+<br><br>
+
+<input type="range" id="slider" min="0" max="77570" value="0" step="1" style="width:100%">
+<br>
+<div id="tdisp">t = 0 ms</div>
+<br>
+
+▲ Drag slowly and see.<br><br>
+input a value or drag the slider, scientific notation (e-notation) supported. <br>
+the slider control the order of magnitude (\(\log_{10} t\)), not linear time. as it move rightward, the actual elapsed time increase exponentially. <br>
+
+<br>
+<!--
+<a href="about:blank" target="_blank">
+  <button>Learn more</button>
+</a>
+-->
+
+<!-- learn more -->
+<script>
+  function showRawInfo() {
+    const content = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <script>
+          window.MathJax = { tex: { inlineMath: [['$', '$']] } };
+        <\/script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
+      </head>
+      <body>
+        <p>
+          The music you just heard has a total duration of $1 \\times 10^{7757}$ ms — approximately $3.1688 \\times 10^{7746}$ years. It is not a repeating loop, and mathematically, it never repeats.
+        </p>
+        <p>
+          Under normal circumstances, you can't finish listening to it, because our universe will enter heat death in about $10^{106}$ years. By then, even the largest black holes will have completely evaporated, the universe will reach absolute zero, everything will be still, and time lose all meanings. And by that point, this music will have barely even started.
+        </p>
+        <p>
+          This music can't be saved in its entirety, because it's too long. But this webpage doesn't directly play the full audio, instead, it calculates in real time based on the set of mathematical formulas you see. When you enter a number to jump, or drag, the webpage computes the music at that moment in time from the formulas, and plays it. So even though there's no complete file, every single second of it is fixed. In this sense, it truly "exists." The formulas are like a musical score, precisely conducting it across a span of time lasting billions upon billions of universe lifetimes. Imagine you select "1 Universe Heat Death Age" on your computer, enter 1, jump & listen, while I start playing from the very beginning on mine, then, at the heat death of the universe, when all fade into nothingness, what my computer is playing (if it's well-made enough to still be around) would be exactly what you're hearing right now.
+        </p>
+        <p>
+          Since it's this long, how is it never repeating? If you look at short clips, they will repeat, that's unavoidable. But mathematically, the sound at every moment is fully determined by the current time $t$. I divide $t$ by 512 different primes and use the remainders to control pitch, timbre, and modulation. Each remainder cycles at a different rate. For all of them to return to the same state at once, it takes the product of all those primes, a huge number over a thousand digits long. Until then, the sound never fully repeats.
+        </p>
+	<p>---</p>
+        <p>
+          你刚刚听到的音乐总时长 $1 \\times 10^{7757}$ ms，大约 $3.1688 \\times 10^{7746}$ 年。它并不在反复循环，且从数学上来说，它完全不重复。
+        </p>
+        <p>
+          正常来说，你没法听完它，因为我们的宇宙再过 $10^{106}$ 年就会进入热寂。最大的黑洞已经完全蒸发，宇宙进入绝对零度，一切静止，时间失去意义。而到那时，本音乐的进度可以说几乎没开始。
+        </p>
+        <p>
+          本音乐是无法被完整保存的，因为它太长了。不过本网页并没有直接播放它完整的音频，而是根据你看到的一组数学公式进行实时计算。当你输入数字进行跳转，或者拖拽时，网页根据公式计算出那个时间点的音乐，并播放出来。因此，虽然没有完整记录它的文件，但它的每分每秒都是固定的。从这种意义上来说，它的确“存在”。公式就像乐谱，在长达亿万次宇宙生灭的时间里精准指挥着它。想象你在电脑上选择 "1 Universe Heat Death Age"，输入 1 并跳转收听，同时我在电脑上从头开始播放，那么在宇宙热寂，万物虚无的时候，我的电脑（如果它质量好还在的话）播放着的就是你现在听到的。
+        </p>
+        <p>
+          既然这么长，它是如何完全不重复的呢？如果只看音频的片段，它会重复，这是不可避免的。不过从数学上来说，它每一时刻的声音完全由当前时间 $t$ 决定。我将 $t$ 对 512 个素数分别取余数，用来控制音高、音色、失真等数据。每个余数以不同的速率循环。所有余数同时回到同一状态需要经过其中所有素数的乘积那么长时间。在此之前，声音不会完全重复。
+        </p>
+      </body>
+      </html>
+    `;
+
+    var w = window.open();
+    w.document.write(content);
+    w.document.close();
+  }
+</script>
+
+<button onclick="showRawInfo()">Learn more</button>
+
+<script>
+
+//
+// player
+//
+// config
+var PRIME_LIMIT = 1024;
+
+// generate primes
+var PRIMES = (function() {
+    var L = 20000, s = new Uint8Array(L + 1), p = [];
+    for (var i = 2; i <= L; i++) {
+        if (!s[i]) { p.push(i); for (var j = i * i; j <= L; j += i) s[j] = 1; }
+    }
+    return p.slice(0, PRIME_LIMIT);
+})();
+var PB = PRIMES.map(function(p) { return BigInt(p); });
+var LOG10_ALBUM = 7757;
+
+// parsing utils
+function parseSci(s) {
+    s = s.trim().replace(/,/g, '').replace(/\s+/g, '');
+    if (!s || s === '0') return 0n;
+    var neg = false;
+    if (s[0] === '-') { neg = true; s = s.slice(1); }
+    else if (s[0] === '+') s = s.slice(1);
+    if (/^\d+$/.test(s)) { var v = BigInt(s); return neg ? -v : v; }
+    var m = s.match(/^(\d+\.?\d*)[eE]([+-]?\d+)$/);
+    if (m) {
+        var coef = m[1], exp = parseInt(m[2], 10);
+        var dot = coef.indexOf('.');
+        var digits, dlen;
+        if (dot >= 0) { digits = coef.replace('.', ''); dlen = coef.length - dot - 1; }
+        else { digits = coef; dlen = 0; }
+        var ee = exp - dlen;
+        var man = BigInt(digits);
+        if (ee >= 0) { var r = man * (10n ** BigInt(ee)); return neg ? -r : r; }
+        else { var r2 = man / (10n ** BigInt(-ee)); return neg ? -r2 : r2; }
+    }
+    if (/^\d*\.\d+$/.test(s)) { var ip = s.split('.')[0] || '0'; var v2 = BigInt(ip); return neg ? -v2 : v2; }
+    return 0n;
+}
+
+var UNITS = {
+    ms:  1n,
+    s:   1000n,
+    min: 60000n,
+    hr:  3600000n,
+    day: 86400000n,
+    yr:  31557600000n,
+    uhd: 31557600000n * (10n ** 106n)
+};
+
+// music logic
+function computeState(t) {
+    if (t < 0n) t = 0n;
+    var digits = (t < 1000000000n) ? 0 : (t.toString().length - 1);
+    var progress = digits / 7757.0;
+    if (progress > 1.0) progress = 1.0;
+    var chaos = 1.0 - progress;
+
+    var useNum = (t < 9007199254740992n);
+    var tn = useNum ? Number(t) : 0;
+    var a = 0, b = 0;
+
+    // dynamic logic
+    var totalPrimes = PRIMES.length;
+    var midPoint = Math.floor(totalPrimes / 2);
+
+    // first half of primes
+    for (var i = 0; i < midPoint; i++) {
+        var r = useNum ? (tn % PRIMES[i]) : Number(t % PB[i]);
+        a += r / PRIMES[i];
+    }
+
+    // second half of primes
+    for (var i2 = midPoint; i2 < totalPrimes; i2++) {
+        var r = useNum ? (tn % PRIMES[i2]) : Number(t % PB[i2]);
+        b += r / PRIMES[i2];
+    }
+
+    //
+
+    var baseFreq = (chaos * 600) + ((1 - chaos) * 100);
+    var jitter = Math.sin(a) * chaos * 300;
+    var fc = baseFreq + jitter;
+    if(fc < 20) fc = 20;
+
+    var ratio = (chaos * 2.71828) + ((1 - chaos) * 2.0);
+    var fm = fc * ratio;
+
+    var mi = (chaos * 20) + ((1 - chaos) * 1) + (Math.sin(b) * chaos * 10);
+    var noise = chaos * 0.5;
+    var dist = 1.0 + (chaos * 99.0);
+    var feed = chaos * 0.90;
+
+    return { fc: fc, fm: fm, mi: mi, noise: noise, dist: dist, feed: feed, chaos: chaos };
+}
+
+// audio engine
+var audioCtx = null, playing = false;
+var originT = 0n, originWall = 0;
+var P = { fc: 200, fm: 300, mi: 5, noise: 0, dist: 1, feed: 0, chaos: 1 };
+var tickId = null;
+var isDragging = false;
+
+function stopPlay() {
+    playing = false;
+    if (tickId !== null) { clearInterval(tickId); tickId = null; }
+    if (audioCtx) { try { audioCtx.close(); } catch(e) {} audioCtx = null; }
+}
+
+function startPlay(tBig) {
+    stopPlay();
+    if (tBig < 0n) tBig = 0n;
+    originT = tBig;
+    originWall = performance.now();
+    playing = true;
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    var sr = audioCtx.sampleRate;
+
+    var proc = audioCtx.createScriptProcessor(4096, 0, 2);
+    var gain = audioCtx.createGain();
+    gain.gain.value = 0.2;
+
+    var phC = 0, phM = 0;
+    var TP = Math.PI * 2;
+    var lastL = 0;
+
+    proc.onaudioprocess = function(e) {
+        var outL = e.outputBuffer.getChannelData(0);
+        var outR = e.outputBuffer.getChannelData(1);
+
+        if (!playing) {
+            for(var z=0; z<outL.length; z++) { outL[z]=0; outR[z]=0; }
+            return;
+        }
+
+        var fc = P.fc, fm = P.fm, mi = P.mi;
+        var noiseLvl = P.noise, distGain = P.dist, feedAmt = P.feed;
+
+        var incC = TP * fc / sr;
+        var incM = TP * fm / sr;
+
+        for (var i = 0; i < outL.length; i++) {
+            var mod = Math.sin(phM);
+            var car = Math.sin(phC + (mi * mod));
+            var white = (Math.random() * 2.0) - 1.0;
+            var s = (car * (1.0 - noiseLvl)) + (white * noiseLvl);
+            s = s + (lastL * feedAmt);
+            s = Math.tanh(s * distGain);
+
+            outL[i] = s;
+            outR[i] = s * -1;
+            lastL = s;
+
+            phC += incC;
+            phM += incM;
+            if (phC >= TP) phC -= TP;
+            if (phM >= TP) phM -= TP;
+        }
+    };
+
+    proc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    doTick();
+    tickId = setInterval(doTick, 50);
+}
+
+function doTick() {
+    if (!playing) return;
+    var el = BigInt(Math.floor(performance.now() - originWall));
+    var tNow = originT + el;
+    P = computeState(tNow);
+    if (!isDragging) refreshUI(tNow);
+}
+
+// ui helpers
+function bigLog10(n) {
+    if (n <= 0n) return 0;
+    var s = n.toString(), L = s.length, k = Math.min(15, L);
+    return (L - k) + Math.log10(parseFloat(s.substring(0, k)));
+}
+function log10ToBig(v) {
+    if (v <= 0) return 0n;
+    var ip = Math.floor(v), fp = v - ip;
+    var m = Math.pow(10, fp);
+    var mb = BigInt(Math.round(m * 1e12));
+    if (ip >= 12) return mb * (10n ** BigInt(ip - 12));
+    var d = 10n ** BigInt(12 - ip);
+    return d > 0n ? mb / d : 0n;
+}
+
+// fix
+function fmtSci(n) {
+    var s = n.toString();
+    if (s === '0') return '0';
+    var exp = s.length - 1;
+    var mantissaStr = s.substring(0, 8);
+
+    while (mantissaStr.length > 1 && mantissaStr.endsWith('0')) {
+        mantissaStr = mantissaStr.slice(0, -1);
+    }
+
+    if (mantissaStr.length > 1) {
+        mantissaStr = mantissaStr[0] + '.' + mantissaStr.substring(1);
+    }
+
+    return mantissaStr + ' × 10^' + exp;
+}
+
+function formatTime(t) {
+    if (t < 0n) t = 0n;
+
+    var digits = 0;
+    var parts = [];
+
+    function add(val, label) {
+        var s = val.toString();
+        parts.push([s, label, val]);
+        digits += s.length;
+    }
+
+    function out() {
+        var useSci = digits > 179;
+        var s = 't = ';
+        for (var i = 0; i < parts.length; i++) {
+            var p = parts[i];
+            var txt = p[0];
+            var label = p[1];
+            var val = p[2];
+
+            if (label === 'uhd' && useSci) {
+                txt = fmtSci(val);
+            }
+
+            // handle pluralization
+            var suffix = (val === 1n) ? '' : 's';
+
+            // uhd
+            if (label === 'uhd') {
+                s += txt + ' Universe Heat Death Age' + suffix;
+            } else if (label === 'ms') {
+                s += txt + ' ms';
+            } else {
+                s += txt + ' ' + label + suffix;
+            }
+
+            if (i < parts.length - 1) s += ' ';
+        }
+        return s;
+    }
+
+    // ms
+    if (t < UNITS.s) {
+        add(t, 'ms');
+        return out();
+    }
+
+    // sec
+    if (t < UNITS.min) {
+        add(t / UNITS.s, 'second');
+        return out();
+    }
+
+    // min
+    if (t < UNITS.hr) {
+        var min = t / UNITS.min;
+        var sec = (t % UNITS.min) / UNITS.s;
+        add(min, 'minute');
+        add(sec, 'second');
+        return out();
+    }
+
+    // hours
+    if (t < UNITS.day) {
+        var hr = t / UNITS.hr;
+        var remH = t % UNITS.hr;
+        var min = remH / UNITS.min;
+        var sec = (remH % UNITS.min) / UNITS.s;
+        add(hr, 'hour');
+        add(min, 'minute');
+        add(sec, 'second');
+        return out();
+    }
+
+    // days
+    if (t < UNITS.yr) {
+        var day = t / UNITS.day;
+        var remD = t % UNITS.day;
+        var hr = remD / UNITS.hr;
+        var remH = remD % UNITS.hr;
+        var min = remH / UNITS.min;
+        var sec = (remH % UNITS.min) / UNITS.s;
+        add(day, 'day');
+        add(hr, 'hour');
+        add(min, 'minute');
+        add(sec, 'second');
+        return out();
+    }
+
+    // yrs
+    if (t < UNITS.uhd) {
+        var yr = t / UNITS.yr;
+        var remY = t % UNITS.yr;
+
+        // fix
+        var day = remY / UNITS.day;
+        var remD = remY % UNITS.day;
+
+        var hr = remD / UNITS.hr;
+        var remH = remD % UNITS.hr;
+
+        var min = remH / UNITS.min;
+        var sec = (remH % UNITS.min) / UNITS.s;
+
+        //
+
+        add(yr, 'year');
+        add(day, 'day');
+        add(hr, 'hour');
+        add(min, 'minute');
+        add(sec, 'second');
+        return out();
+    }
+
+    var uhd = t / UNITS.uhd;
+    var remU = t % UNITS.uhd;
+
+    var yr = remU / UNITS.yr;
+    var remY = remU % UNITS.yr;
+
+    var day = remY / UNITS.day;
+    var remD = remY % UNITS.day;
+
+    var hr = remD / UNITS.hr;
+    var remH = remD % UNITS.hr;
+
+    var min = remH / UNITS.min;
+    var sec = (remH % UNITS.min) / UNITS.s;
+
+    add(uhd, 'uhd');
+    add(yr, 'year');
+    add(day, 'day');
+    add(hr, 'hour');
+    add(min, 'minute');
+    add(sec, 'second');
+    return out();
+}
+
+function refreshUI(t) {
+    document.getElementById('tdisp').textContent = formatTime(t);
+    var lv = bigLog10(t);
+    var sv = Math.max(0, Math.min(77570, Math.round(lv * 10)));
+    document.getElementById('slider').value = sv;
+}
+
+// event handlers
+document.getElementById('goBtn').addEventListener('click', function() {
+    var errEl = document.getElementById('err');
+    try {
+        var raw = document.getElementById('inp').value || '0';
+        var val = parseSci(raw);
+        var uEl = document.querySelector('input[name="u"]:checked');
+        var u = uEl ? uEl.value : 'yr';
+        var tMs = val * UNITS[u];
+        errEl.textContent = '';
+        startPlay(tMs < 0n ? 0n : tMs);
+    } catch(e) { errEl.textContent = 'Error: ' + e.message; }
+});
+
+document.getElementById('stopBtn').addEventListener('click', stopPlay);
+document.getElementById('inp').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('goBtn').click();
+});
+
+var sl = document.getElementById('slider');
+sl.addEventListener('mousedown', function() { isDragging = true; });
+sl.addEventListener('input', function() {
+    var lv = parseInt(this.value, 10) / 10;
+    var tb = log10ToBig(lv);
+    document.getElementById('tdisp').textContent = formatTime(tb);
+});
+
+sl.addEventListener('change', function() {
+    isDragging = false;
+    var lv = parseInt(this.value, 10) / 10;
+    startPlay(log10ToBig(lv));
+});
+
+</script>
+</body>
+</html>
